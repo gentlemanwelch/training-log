@@ -1,0 +1,1830 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mission Sub-13 — Summer Training Log</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700;9..144,900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #F2EFE6;
+    --paper: #FAF7EE;
+    --ink: #0F1E2E;
+    --ink-soft: #2A3849;
+    --muted: #6B7066;
+    --line: #D8D2BF;
+    --accent: #E94E1B;
+    --accent-deep: #B83A0E;
+    --gold: #C49A2C;
+    --success: #5C8A45;
+    --rest: #8B95A0;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Inter', -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    padding: 24px 16px 80px;
+    min-height: 100vh;
+  }
+
+  .container {
+    max-width: 920px;
+    margin: 0 auto;
+  }
+
+  /* ===== HERO ===== */
+  .hero {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 48px 36px 40px;
+    border-radius: 4px;
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 32px;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 6px;
+    background: repeating-linear-gradient(
+      90deg,
+      var(--accent) 0 40px,
+      transparent 40px 80px
+    );
+  }
+
+  .hero-eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 16px;
+  }
+
+  .hero-title {
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    font-size: clamp(40px, 7vw, 64px);
+    line-height: 0.95;
+    letter-spacing: -0.02em;
+    margin-bottom: 20px;
+    font-variation-settings: 'opsz' 144;
+  }
+
+  .hero-title em {
+    font-style: italic;
+    color: var(--accent);
+    font-weight: 500;
+  }
+
+  .hero-sub {
+    font-size: 15px;
+    color: rgba(250, 247, 238, 0.7);
+    max-width: 500px;
+    margin-bottom: 32px;
+  }
+
+  .time-display {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr auto 1fr;
+    gap: 0;
+    align-items: end;
+    padding-top: 24px;
+    border-top: 1px solid rgba(250, 247, 238, 0.15);
+  }
+
+  @media (max-width: 600px) {
+    .time-display {
+      grid-template-columns: 1fr 1fr;
+      gap: 24px 16px;
+    }
+    .time-divider { display: none; }
+  }
+
+  .time-block {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .time-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba(250, 247, 238, 0.5);
+  }
+
+  .time-value {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: clamp(28px, 5vw, 44px);
+    font-weight: 700;
+    line-height: 1;
+    color: var(--paper);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .time-value.target { color: var(--accent); }
+
+  .time-divider {
+    font-family: 'Fraunces', serif;
+    font-size: 28px;
+    color: rgba(250, 247, 238, 0.3);
+    padding-bottom: 8px;
+  }
+
+  /* ===== NAV TABS ===== */
+  .tabs {
+    display: flex;
+    gap: 0;
+    border-bottom: 1px solid var(--line);
+    margin-bottom: 32px;
+    overflow-x: auto;
+  }
+
+  .tab {
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--muted);
+    background: none;
+    border: none;
+    padding: 14px 20px;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+    white-space: nowrap;
+    transition: color 0.15s;
+  }
+
+  .tab:hover { color: var(--ink); }
+
+  .tab.active {
+    color: var(--ink);
+    border-bottom-color: var(--accent);
+  }
+
+  /* ===== SECTIONS ===== */
+  .panel { display: none; }
+  .panel.active { display: block; }
+
+  /* ===== STATS STRIP ===== */
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1px;
+    background: var(--line);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    margin-bottom: 32px;
+    overflow: hidden;
+  }
+
+  @media (max-width: 600px) {
+    .stats { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  .stat {
+    background: var(--paper);
+    padding: 20px 16px;
+    text-align: center;
+  }
+
+  .stat-num {
+    font-family: 'Fraunces', serif;
+    font-size: 36px;
+    font-weight: 600;
+    color: var(--ink);
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+    font-variation-settings: 'opsz' 144;
+  }
+
+  .stat-num.gold { color: var(--gold); }
+  .stat-num.accent { color: var(--accent); }
+  .stat-num.success { color: var(--success); }
+
+  .stat-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-top: 8px;
+  }
+
+  /* ===== WEEK CARDS ===== */
+  .week {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    margin-bottom: 16px;
+    overflow: hidden;
+  }
+
+  .week-header {
+    padding: 20px 24px;
+    display: grid;
+    grid-template-columns: auto 1fr auto auto;
+    gap: 20px;
+    align-items: center;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+
+  .week-header:hover { background: rgba(0,0,0,0.02); }
+
+  @media (max-width: 600px) {
+    .week-header {
+      grid-template-columns: auto 1fr auto;
+      gap: 12px;
+      padding: 16px;
+    }
+    .week-mileage { display: none; }
+  }
+
+  .week-num {
+    font-family: 'Fraunces', serif;
+    font-size: 32px;
+    font-weight: 600;
+    color: var(--accent);
+    line-height: 1;
+    font-variation-settings: 'opsz' 144;
+    min-width: 56px;
+  }
+
+  .week-num span {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    color: var(--muted);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 4px;
+    font-weight: 500;
+  }
+
+  .week-info h3 {
+    font-family: 'Fraunces', serif;
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 4px;
+  }
+
+  .week-info p {
+    font-size: 13px;
+    color: var(--muted);
+  }
+
+  .week-mileage {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: var(--ink-soft);
+    text-align: right;
+  }
+
+  .week-mileage span {
+    display: block;
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 2px;
+  }
+
+  .week-progress {
+    width: 48px;
+    height: 48px;
+    position: relative;
+    flex-shrink: 0;
+  }
+
+  .week-progress svg {
+    width: 100%;
+    height: 100%;
+    transform: rotate(-90deg);
+  }
+
+  .week-progress-track {
+    fill: none;
+    stroke: var(--line);
+    stroke-width: 4;
+  }
+
+  .week-progress-fill {
+    fill: none;
+    stroke: var(--success);
+    stroke-width: 4;
+    stroke-linecap: round;
+    transition: stroke-dashoffset 0.4s;
+  }
+
+  .week-progress-text {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--ink);
+  }
+
+  .week-days {
+    display: none;
+    border-top: 1px solid var(--line);
+  }
+
+  .week.open .week-days { display: block; }
+
+  .day {
+    display: grid;
+    grid-template-columns: 64px 1fr auto;
+    gap: 16px;
+    align-items: center;
+    padding: 16px 24px;
+    border-bottom: 1px solid var(--line);
+    transition: background 0.15s;
+  }
+
+  @media (max-width: 600px) {
+    .day {
+      grid-template-columns: 48px 1fr auto;
+      padding: 14px 16px;
+      gap: 12px;
+    }
+  }
+
+  .day:last-child { border-bottom: none; }
+  .day:hover { background: rgba(0,0,0,0.02); }
+
+  .day.completed { background: rgba(92, 138, 69, 0.06); }
+
+  .day-name {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    color: var(--muted);
+    text-transform: uppercase;
+  }
+
+  .day-name .day-num {
+    font-family: 'Fraunces', serif;
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--ink);
+    display: block;
+    letter-spacing: 0;
+    text-transform: none;
+    line-height: 1;
+    margin-bottom: 2px;
+  }
+
+  .day-workout strong {
+    font-family: 'Fraunces', serif;
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--ink);
+    display: block;
+    margin-bottom: 4px;
+  }
+
+  .day-workout p {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+
+  .day-workout.rest strong { color: var(--rest); }
+  .day-workout.timetrial strong { color: var(--accent); }
+
+  .day-action {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    align-items: flex-end;
+  }
+
+  .log-btn {
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--ink);
+    background: var(--paper);
+    border: 1px solid var(--ink);
+    padding: 8px 14px;
+    cursor: pointer;
+    border-radius: 2px;
+    transition: all 0.15s;
+    white-space: nowrap;
+  }
+
+  .log-btn:hover { background: var(--ink); color: var(--paper); }
+
+  .log-btn.done {
+    background: var(--success);
+    border-color: var(--success);
+    color: var(--paper);
+  }
+
+  .log-btn.done:hover { background: var(--ink); border-color: var(--ink); }
+
+  .day-meta {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+  }
+
+  /* ===== SECTION HEADERS ===== */
+  .section-header {
+    margin: 48px 0 20px;
+  }
+
+  .section-header .eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 8px;
+  }
+
+  .section-header h2 {
+    font-family: 'Fraunces', serif;
+    font-size: 32px;
+    font-weight: 600;
+    color: var(--ink);
+    line-height: 1;
+    letter-spacing: -0.01em;
+    font-variation-settings: 'opsz' 144;
+  }
+
+  .section-header p {
+    margin-top: 10px;
+    color: var(--muted);
+    font-size: 14px;
+    max-width: 580px;
+  }
+
+  /* ===== GLOSSARY ===== */
+  .glossary {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  .gloss-item {
+    padding: 20px 24px;
+    border-bottom: 1px solid var(--line);
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    gap: 24px;
+  }
+
+  @media (max-width: 700px) {
+    .gloss-item { grid-template-columns: 1fr; gap: 8px; padding: 18px 18px; }
+  }
+
+  .gloss-item:last-child { border-bottom: none; }
+
+  .gloss-term {
+    font-family: 'Fraunces', serif;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--ink);
+  }
+
+  .gloss-term span {
+    display: block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    font-weight: 500;
+    margin-top: 2px;
+  }
+
+  .gloss-def {
+    color: var(--ink-soft);
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  .gloss-def strong {
+    color: var(--ink);
+    font-weight: 600;
+  }
+
+  .pace-table {
+    margin-top: 12px;
+    border-collapse: collapse;
+    width: 100%;
+    font-size: 13px;
+  }
+
+  .pace-table th, .pace-table td {
+    text-align: left;
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .pace-table th {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+    font-weight: 500;
+  }
+
+  .pace-table td {
+    font-family: 'JetBrains Mono', monospace;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* ===== RULES ===== */
+  .rules {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+
+  @media (max-width: 700px) {
+    .rules { grid-template-columns: 1fr; }
+  }
+
+  .rule {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 24px;
+    position: relative;
+  }
+
+  .rule-num {
+    font-family: 'Fraunces', serif;
+    font-size: 48px;
+    font-weight: 600;
+    color: var(--accent);
+    line-height: 0.85;
+    font-variation-settings: 'opsz' 144;
+    margin-bottom: 12px;
+  }
+
+  .rule h4 {
+    font-family: 'Fraunces', serif;
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: var(--ink);
+  }
+
+  .rule p {
+    font-size: 13px;
+    color: var(--ink-soft);
+    line-height: 1.6;
+  }
+
+  /* ===== PRS ===== */
+  .prs {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--line);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  @media (max-width: 600px) {
+    .prs { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  .pr-card {
+    background: var(--paper);
+    padding: 24px 20px;
+    text-align: left;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+
+  .pr-card:hover { background: rgba(233, 78, 27, 0.04); }
+
+  .pr-event {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+
+  .pr-time {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--ink);
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .pr-edit {
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    color: var(--accent);
+    margin-top: 8px;
+  }
+
+  /* ===== STRENGTH ROUTINE ===== */
+  .strength-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+
+  @media (max-width: 700px) {
+    .strength-grid { grid-template-columns: 1fr; }
+  }
+
+  .exercise {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 20px;
+  }
+
+  .exercise h4 {
+    font-family: 'Fraunces', serif;
+    font-size: 17px;
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+
+  .exercise .reps {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--accent);
+    margin-bottom: 8px;
+    font-weight: 600;
+  }
+
+  .exercise p {
+    font-size: 13px;
+    color: var(--ink-soft);
+    line-height: 1.5;
+  }
+
+  /* ===== MODAL ===== */
+  .modal-bg {
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 30, 46, 0.6);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    z-index: 100;
+  }
+
+  .modal-bg.show { display: flex; }
+
+  .modal {
+    background: var(--paper);
+    border-radius: 4px;
+    max-width: 480px;
+    width: 100%;
+    padding: 32px;
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+
+  .modal-eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 8px;
+  }
+
+  .modal h3 {
+    font-family: 'Fraunces', serif;
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 6px;
+  }
+
+  .modal-workout {
+    font-size: 14px;
+    color: var(--muted);
+    margin-bottom: 24px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .field {
+    margin-bottom: 20px;
+  }
+
+  .field label {
+    display: block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 8px;
+    font-weight: 600;
+  }
+
+  .field input, .field textarea {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid var(--line);
+    background: var(--bg);
+    border-radius: 2px;
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    color: var(--ink);
+  }
+
+  .field input:focus, .field textarea:focus {
+    outline: none;
+    border-color: var(--ink);
+  }
+
+  .field input[type="text"].time-input {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 18px;
+    font-weight: 700;
+  }
+
+  .field textarea {
+    min-height: 70px;
+    resize: vertical;
+  }
+
+  .feeling-row {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 8px;
+  }
+
+  .feeling-btn {
+    aspect-ratio: 1;
+    border: 1px solid var(--line);
+    background: var(--bg);
+    border-radius: 2px;
+    font-size: 22px;
+    cursor: pointer;
+    transition: all 0.15s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .feeling-btn:hover { border-color: var(--ink); }
+
+  .feeling-btn.selected {
+    border-color: var(--accent);
+    background: rgba(233, 78, 27, 0.08);
+  }
+
+  .feeling-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    text-align: center;
+    margin-top: 4px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  .modal-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 28px;
+  }
+
+  .btn {
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    padding: 12px 20px;
+    border-radius: 2px;
+    cursor: pointer;
+    border: 1px solid;
+    transition: all 0.15s;
+  }
+
+  .btn-primary {
+    background: var(--ink);
+    color: var(--paper);
+    border-color: var(--ink);
+    flex: 1;
+  }
+
+  .btn-primary:hover { background: var(--accent); border-color: var(--accent); }
+
+  .btn-ghost {
+    background: transparent;
+    color: var(--ink);
+    border-color: var(--line);
+  }
+
+  .btn-ghost:hover { border-color: var(--ink); }
+
+  .btn-danger {
+    background: transparent;
+    color: var(--accent);
+    border-color: var(--line);
+    font-size: 12px;
+    padding: 10px 14px;
+  }
+
+  .btn-danger:hover { background: var(--accent); color: var(--paper); border-color: var(--accent); }
+
+  /* ===== ENCOURAGEMENT ===== */
+  .encourage {
+    background: linear-gradient(135deg, var(--ink) 0%, var(--ink-soft) 100%);
+    color: var(--paper);
+    padding: 36px;
+    border-radius: 4px;
+    margin: 32px 0;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .encourage::after {
+    content: '';
+    position: absolute;
+    right: -40px;
+    bottom: -40px;
+    width: 200px;
+    height: 200px;
+    border: 2px solid var(--accent);
+    border-radius: 50%;
+    opacity: 0.15;
+  }
+
+  .encourage .eyebrow {
+    color: var(--accent);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+
+  .encourage h3 {
+    font-family: 'Fraunces', serif;
+    font-size: 26px;
+    font-weight: 500;
+    line-height: 1.2;
+    max-width: 580px;
+    font-style: italic;
+  }
+
+  /* ===== UTILITIES ===== */
+  .footer-note {
+    text-align: center;
+    margin-top: 48px;
+    font-size: 12px;
+    color: var(--muted);
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  /* Animation for completion */
+  @keyframes pulse-success {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+  }
+
+  .pulse { animation: pulse-success 0.4s ease; }
+
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-eyebrow">Summer Training Log — 2 Mile</div>
+    <h1 class="hero-title">Mission:<br/><em>sub-thirteen</em></h1>
+    <p class="hero-sub">Ten weeks. Five days a week. One number to chase. Run smart, recover hard, trust the process.</p>
+    <div class="time-display">
+      <div class="time-block">
+        <div class="time-label">Goal</div>
+        <div class="time-value target">13:00</div>
+      </div>
+      <div class="time-divider">›</div>
+      <div class="time-block">
+        <div class="time-label">Current Best</div>
+        <div class="time-value">14:01</div>
+      </div>
+      <div class="time-divider">›</div>
+      <div class="time-block">
+        <div class="time-label">Gap to Close</div>
+        <div class="time-value" id="gapDisplay">1:01</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TABS -->
+  <div class="tabs">
+    <button class="tab active" data-tab="plan">The Plan</button>
+    <button class="tab" data-tab="terms">Terminology</button>
+    <button class="tab" data-tab="prs">PRs</button>
+    <button class="tab" data-tab="strength">Strength</button>
+    <button class="tab" data-tab="rules">The Rules</button>
+  </div>
+
+  <!-- PLAN PANEL -->
+  <div class="panel active" id="panel-plan">
+
+    <div class="stats">
+      <div class="stat">
+        <div class="stat-num" id="statWeek">—</div>
+        <div class="stat-label">Current Week</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num success" id="statDone">0</div>
+        <div class="stat-label">Workouts Done</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num accent" id="statStreak">0</div>
+        <div class="stat-label">Day Streak</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num gold" id="statMiles">0</div>
+        <div class="stat-label">Miles Run</div>
+      </div>
+    </div>
+
+    <div id="weeksContainer"></div>
+
+    <div class="encourage" id="dailyQuote">
+      <div class="eyebrow">Quote of the day</div>
+      <h3><span id="quoteText">…</span><br/><span id="quoteAuthor" style="font-style:normal;opacity:0.7;font-size:0.78em;letter-spacing:0.02em;">—</span></h3>
+    </div>
+  </div>
+
+  <!-- TERMINOLOGY PANEL -->
+  <div class="panel" id="panel-terms">
+    <div class="section-header">
+      <div class="eyebrow">Reference</div>
+      <h2>What every word means</h2>
+      <p>The training plan uses specific terms. Learn them once and the workouts will make sense for the whole summer.</p>
+    </div>
+
+    <div class="glossary">
+
+      <div class="gloss-item">
+        <div class="gloss-term">Easy run<span>~75-80% effort</span></div>
+        <div class="gloss-def"><strong>Conversational pace.</strong> You should be able to talk in full sentences while running. If you can't, you're going too fast — slow down even more. This is the pace runners get wrong most often. For you, probably <strong>9:30-10:30 per mile</strong>. Walk if you need to. Easy means easy.</div>
+      </div>
+
+      <div class="gloss-item">
+        <div class="gloss-term">Steady run<span>~82-87% effort</span></div>
+        <div class="gloss-def"><strong>Comfortable but focused.</strong> You can still talk but only in short phrases. You're working but not suffering. Probably <strong>8:30-9:00 per mile</strong>.</div>
+      </div>
+
+      <div class="gloss-item">
+        <div class="gloss-term">Tempo run<span>~88-92% effort</span></div>
+        <div class="gloss-def"><strong>Comfortably hard.</strong> One-word answers only. You're focused, breathing rhythmically, and it takes real effort to hold the pace. Probably <strong>7:30-8:00 per mile</strong>.</div>
+      </div>
+
+      <div class="gloss-item">
+        <div class="gloss-term">Intervals / Reps<span>~93-97% effort</span></div>
+        <div class="gloss-def"><strong>Hard but controlled.</strong> Short bursts of fast running with rest in between. Not all-out sprints — you should be able to repeat the pace evenly across all reps. Each interval has a target time.</div>
+      </div>
+
+      <div class="gloss-item">
+        <div class="gloss-term">Strides<span>Quick & smooth</span></div>
+        <div class="gloss-def"><strong>4×20-second strides</strong> means: run 4 times, each for 20 seconds, with full rest in between. Each stride is <strong>relaxed fast running</strong>, not a sprint — about 90% of your top speed with smooth form. Walk or stand for 30-60 seconds between each one. They build leg speed without taxing your aerobic system. Always do them on a flat, smooth surface.</div>
+      </div>
+
+      <div class="gloss-item">
+        <div class="gloss-term">Warm-up / Cool-down<span>Bookends every workout</span></div>
+        <div class="gloss-def">Before any hard workout: <strong>10 minutes of very easy jogging</strong>, then some leg swings and dynamic stretches. After: <strong>10 more minutes of easy jogging</strong> to flush the legs. Never skip these — they're how you stay healthy.</div>
+      </div>
+
+      <div class="gloss-item">
+        <div class="gloss-term">400m / 800m<span>Distances on a track</span></div>
+        <div class="gloss-def"><strong>1 lap on a standard track = 400 meters</strong> (about ¼ mile). 800m = 2 laps. 1 mile ≈ 4 laps. Most of the harder workouts happen on the track because the distance is exact and the surface is fast.</div>
+      </div>
+
+      <div class="gloss-item">
+        <div class="gloss-term">Progression run<span>Easy → steady</span></div>
+        <div class="gloss-def">Start at easy pace, gradually pick it up, finish at steady pace. The point is to <strong>practice running faster when you're already tired</strong> — which is exactly what happens in the second mile of a 2-mile race.</div>
+      </div>
+
+      <div class="gloss-item">
+        <div class="gloss-term">Time trial<span>Race against the clock</span></div>
+        <div class="gloss-def">An all-out effort over a set distance to measure where your fitness actually is. There are two in this plan: a <strong>1-mile time trial in Week 6</strong> (to predict your 2-mile fitness) and a <strong>2-mile time trial in Week 10</strong> (the real test).</div>
+      </div>
+
+      <div class="gloss-item">
+        <div class="gloss-term">Goal pace<span>What sub-13 actually requires</span></div>
+        <div class="gloss-def">For a 13:00 two-mile, you need <strong>6:30 per mile</strong>, which is <strong>1:37.5 per 400m lap</strong>. Goal-pace workouts get your body familiar with that exact speed so it feels normal on race day.</div>
+        <table class="pace-table">
+          <thead>
+            <tr><th>Distance</th><th>Pace for 13:00</th><th>Pace for 13:30</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>400m (1 lap)</td><td>1:37.5</td><td>1:41</td></tr>
+            <tr><td>800m (2 laps)</td><td>3:15</td><td>3:22</td></tr>
+            <tr><td>1 mile (4 laps)</td><td>6:30</td><td>6:45</td></tr>
+            <tr><td>2 mile (8 laps)</td><td>13:00</td><td>13:30</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="gloss-item">
+        <div class="gloss-term">Long run<span>Saturday's job</span></div>
+        <div class="gloss-def">Your longest run of the week. Always at easy pace. This is what builds aerobic endurance over time — the engine behind every other workout.</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- PRS PANEL -->
+  <div class="panel" id="panel-prs">
+    <div class="section-header">
+      <div class="eyebrow">Personal Records</div>
+      <h2>The numbers you're chasing</h2>
+      <p>Tap any PR to update it. New best times automatically save here.</p>
+    </div>
+
+    <div class="prs" id="prsContainer"></div>
+
+    <div class="encourage" style="margin-top: 32px;">
+      <div class="eyebrow">Pace check — sub-13 math</div>
+      <h3>If you can run a mile in 6:15-6:20 by Week 6, sub-13 is realistic. 6:30-6:35? Look at 13:15-13:30. Either way: progress.</h3>
+    </div>
+  </div>
+
+  <!-- STRENGTH PANEL -->
+  <div class="panel" id="panel-strength">
+    <div class="section-header">
+      <div class="eyebrow">Twice a week, 15-20 minutes</div>
+      <h2>Strength routine</h2>
+      <p>Do this on any two days that aren't track-workout days. After an easy run is ideal, or as its own session. Bodyweight only. The strongest injury-prevention you can do.</p>
+    </div>
+
+    <div class="strength-grid">
+      <div class="exercise">
+        <h4>Bodyweight Squats</h4>
+        <div class="reps">3 × 12 reps</div>
+        <p>Feet shoulder-width. Sit back like there's a chair behind you. Keep your chest up. Go to about 90 degrees at the knee.</p>
+      </div>
+
+      <div class="exercise">
+        <h4>Walking Lunges</h4>
+        <div class="reps">3 × 10 each leg</div>
+        <p>Step forward, knee tracks over toes (not past). Front thigh roughly parallel to ground. Push through the front heel to stand.</p>
+      </div>
+
+      <div class="exercise">
+        <h4>Single-Leg Balance</h4>
+        <div class="reps">3 × 30 seconds each</div>
+        <p>Stand on one foot. Try with eyes closed once you can do it easily. Builds ankle stability — critical for road and trail running.</p>
+      </div>
+
+      <div class="exercise">
+        <h4>Plank</h4>
+        <div class="reps">3 × 30-45 seconds</div>
+        <p>Elbows under shoulders, body straight from head to heels. No sagging hips, no piked butt. Core strength = better running form when tired.</p>
+      </div>
+
+      <div class="exercise">
+        <h4>Glute Bridges</h4>
+        <div class="reps">3 × 15 reps</div>
+        <p>Lie on back, knees bent, feet flat. Squeeze glutes and lift hips to make a straight line from knees to shoulders. Hold 2 seconds at the top.</p>
+      </div>
+
+      <div class="exercise">
+        <h4>Calf Raises</h4>
+        <div class="reps">3 × 15 reps</div>
+        <p>Stand on the edge of a step. Lower heels below the step, then rise up onto your toes. Slow on the way down — that's where the strength gets built.</p>
+      </div>
+
+      <div class="exercise">
+        <h4>Side Plank</h4>
+        <div class="reps">3 × 20-30 seconds each side</div>
+        <p>On one elbow, body in a straight line. Hips up, don't let them sag toward the floor. Hits the hip stabilizers runners always neglect.</p>
+      </div>
+
+      <div class="exercise">
+        <h4>Single-Leg Glute Bridge</h4>
+        <div class="reps">2 × 10 each leg</div>
+        <p>Glute bridge but with one leg extended. Drive through the heel of the planted leg. Hardest exercise here — work up to it.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- RULES PANEL -->
+  <div class="panel" id="panel-rules">
+    <div class="section-header">
+      <div class="eyebrow">Non-negotiables</div>
+      <h2>The rules that matter</h2>
+      <p>Speed comes from training. Staying fast comes from these.</p>
+    </div>
+
+    <div class="rules">
+      <div class="rule">
+        <div class="rule-num">01</div>
+        <h4>Easy days are easy</h4>
+        <p>If your heart rate goes above ~170 on an easy day, you're running too hard. Slow down. Walk if you need to. The point isn't to feel tired today — it's to be fresh for the workout tomorrow.</p>
+      </div>
+
+      <div class="rule">
+        <div class="rule-num">02</div>
+        <h4>Two rest days. Always.</h4>
+        <p>Rest days aren't optional and they aren't "active recovery." They're full days off. This is when your body actually gets stronger — not during the runs.</p>
+      </div>
+
+      <div class="rule">
+        <div class="rule-num">03</div>
+        <h4>Pain isn't toughness</h4>
+        <p>If something hurts for more than two runs in a row — shin, knee, hip, foot — stop and tell Dad. Stress fractures start as small pain you push through. Smart runners stop early.</p>
+      </div>
+
+      <div class="rule">
+        <div class="rule-num">04</div>
+        <h4>Fuel like a runner</h4>
+        <p>You're training harder than last summer — you have to eat more than last summer. Carbs before workouts, protein at meals, no skipped meals. Under-fueling is the #1 silent killer of teenage girl runners.</p>
+      </div>
+
+      <div class="rule">
+        <div class="rule-num">05</div>
+        <h4>Sleep is training</h4>
+        <p>Aim for 9 hours. The adaptation from a hard workout happens during sleep. Bad sleep = workouts don't count.</p>
+      </div>
+
+      <div class="rule">
+        <div class="rule-num">06</div>
+        <h4>Shoes matter</h4>
+        <p>Get a real pair of running shoes (Brooks Ghost, Saucony Ride, Nike Pegasus — around $130). Old basketball shoes or tennis shoes will give you shin splints fast.</p>
+      </div>
+
+      <div class="rule">
+        <div class="rule-num">07</div>
+        <h4>Pace is a skill</h4>
+        <p>Going out too fast is the most common mistake. On a 2-mile, you want your second mile to be roughly the same speed as your first. Learning that takes practice.</p>
+      </div>
+
+      <div class="rule">
+        <div class="rule-num">08</div>
+        <h4>Show up honestly</h4>
+        <p>Some days you'll feel terrible and bail on a run. Some days you'll feel great. Log both. The data only helps you if it's real.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer-note">
+    Built for the summer of 2026 — your work, your numbers, your goal.
+  </div>
+
+</div>
+
+<!-- LOG MODAL -->
+<div class="modal-bg" id="modalBg">
+  <div class="modal">
+    <div class="modal-eyebrow" id="modalEyebrow">Log workout</div>
+    <h3 id="modalTitle">Workout</h3>
+    <p class="modal-workout" id="modalWorkout"></p>
+
+    <div class="field">
+      <label for="logDate">Date</label>
+      <input type="date" id="logDate">
+    </div>
+
+    <div class="field" id="distanceField">
+      <label for="logDistance">Distance (miles)</label>
+      <input type="text" id="logDistance" placeholder="e.g. 2.5">
+    </div>
+
+    <div class="field" id="timeField">
+      <label for="logTime">Time</label>
+      <input type="text" class="time-input" id="logTime" placeholder="MM:SS or HH:MM:SS">
+    </div>
+
+    <div class="field">
+      <label>How it felt</label>
+      <div class="feeling-row" id="feelingRow">
+        <button class="feeling-btn" data-feeling="1">😩</button>
+        <button class="feeling-btn" data-feeling="2">😕</button>
+        <button class="feeling-btn" data-feeling="3">😐</button>
+        <button class="feeling-btn" data-feeling="4">🙂</button>
+        <button class="feeling-btn" data-feeling="5">🔥</button>
+      </div>
+      <div class="feeling-row" style="margin-top: 4px;">
+        <div class="feeling-label">Rough</div>
+        <div class="feeling-label">Hard</div>
+        <div class="feeling-label">OK</div>
+        <div class="feeling-label">Good</div>
+        <div class="feeling-label">Great</div>
+      </div>
+    </div>
+
+    <div class="field">
+      <label for="logNotes">Notes (optional)</label>
+      <textarea id="logNotes" placeholder="Weather, how legs felt, anything worth remembering..."></textarea>
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="saveWorkout()">Save</button>
+    </div>
+    <button class="btn btn-danger" id="clearBtn" style="margin-top: 12px; width: 100%; display: none;" onclick="clearWorkout()">Clear this entry</button>
+  </div>
+</div>
+
+<!-- PR MODAL -->
+<div class="modal-bg" id="prModalBg">
+  <div class="modal">
+    <div class="modal-eyebrow">Update PR</div>
+    <h3 id="prModalTitle">New best time</h3>
+    <p class="modal-workout">Type your fastest time for this distance.</p>
+
+    <div class="field">
+      <label for="prTimeInput">Time (MM:SS)</label>
+      <input type="text" class="time-input" id="prTimeInput" placeholder="MM:SS">
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closePrModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="savePr()">Save PR</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ============== DATA ==============
+const PLAN = [
+  { week: 1, phase: 'Base + Form', mileage: '~12', summary: 'Building the habit. Easy means truly easy.',
+    days: [
+      { d: 'Mon', t: 'easy', name: '2 mi easy', detail: 'Finish with 4×20-second strides on a flat road.' },
+      { d: 'Tue', t: 'rest', name: 'Rest' },
+      { d: 'Wed', t: 'easy', name: '2.5 mi easy', detail: 'Truly conversational pace. Walk if you need to.' },
+      { d: 'Thu', t: 'workout', name: '4 × 400m steady', detail: '10 min warm-up jog • 4×400m at steady effort (~1:50-2:00 each) with 90s walk between • 10 min cool-down. Total ~3 mi.' },
+      { d: 'Fri', t: 'rest', name: 'Rest' },
+      { d: 'Sat', t: 'long', name: '3 mi easy (long run)', detail: 'Slowest run of the week. Just time on your feet.' },
+      { d: 'Sun', t: 'easy', name: '2 mi easy', detail: '4×20-second strides at the end.' },
+    ]
+  },
+  { week: 2, phase: 'Base + Form', mileage: '~13', summary: 'A little more volume. Form stays smooth.',
+    days: [
+      { d: 'Mon', t: 'easy', name: '2.25 mi easy', detail: '4×20s strides at the end.' },
+      { d: 'Tue', t: 'rest', name: 'Rest' },
+      { d: 'Wed', t: 'easy', name: '2.5 mi easy' },
+      { d: 'Thu', t: 'workout', name: '5 × 400m steady', detail: '10 min warm-up • 5×400m at steady effort (~1:48-1:55) with 90s walk • 10 min cool-down.' },
+      { d: 'Fri', t: 'rest', name: 'Rest' },
+      { d: 'Sat', t: 'long', name: '3.25 mi easy (long run)' },
+      { d: 'Sun', t: 'easy', name: '2.25 mi easy', detail: '4×20s strides.' },
+    ]
+  },
+  { week: 3, phase: 'Base + Form', mileage: '~14', summary: 'Last base week before workouts get sharper.',
+    days: [
+      { d: 'Mon', t: 'easy', name: '2.5 mi easy', detail: '5×20s strides.' },
+      { d: 'Tue', t: 'rest', name: 'Rest' },
+      { d: 'Wed', t: 'easy', name: '2.5 mi easy' },
+      { d: 'Thu', t: 'workout', name: '6 × 400m steady', detail: '1 mi warm-up • 6×400m at steady effort (~1:45-1:52) with 90s walk between • 1 mi cool-down.' },
+      { d: 'Fri', t: 'rest', name: 'Rest' },
+      { d: 'Sat', t: 'long', name: '3.5 mi easy (long run)' },
+      { d: 'Sun', t: 'easy', name: '2.25 mi easy', detail: 'Strides at end.' },
+    ]
+  },
+  { week: 4, phase: 'Aerobic Strength', mileage: '~15', summary: 'Workouts get longer. Building the engine.',
+    days: [
+      { d: 'Mon', t: 'easy', name: '2.5 mi easy', detail: 'Strides at end.' },
+      { d: 'Tue', t: 'rest', name: 'Rest' },
+      { d: 'Wed', t: 'workout', name: '2 × 800m tempo', detail: '1 mi warm-up • 2×800m at tempo effort (target ~3:35-3:40, two laps each) with 2 min walk between • 1 mi cool-down. Total ~3.5 mi.' },
+      { d: 'Thu', t: 'easy', name: '3 mi easy' },
+      { d: 'Fri', t: 'rest', name: 'Rest' },
+      { d: 'Sat', t: 'long', name: '3.5 mi progression', detail: 'Start easy, finish at steady pace. Practice picking it up when you\'re already running.' },
+      { d: 'Sun', t: 'easy', name: '2.5 mi easy', detail: 'Strides.' },
+    ]
+  },
+  { week: 5, phase: 'Aerobic Strength', mileage: '~16', summary: 'Big aerobic push. The engine gets real.',
+    days: [
+      { d: 'Mon', t: 'easy', name: '2.5 mi easy', detail: 'Strides.' },
+      { d: 'Tue', t: 'rest', name: 'Rest' },
+      { d: 'Wed', t: 'workout', name: '3 × 800m tempo', detail: '1 mi warm-up • 3×800m at tempo effort (~3:35-3:40) with 2 min walk between • 1 mi cool-down. Total ~4 mi.' },
+      { d: 'Thu', t: 'easy', name: '3 mi easy' },
+      { d: 'Fri', t: 'rest', name: 'Rest' },
+      { d: 'Sat', t: 'long', name: '4 mi progression', detail: 'Start easy, finish steady. Longest run yet — pace yourself.' },
+      { d: 'Sun', t: 'easy', name: '2.5 mi easy', detail: 'Strides.' },
+    ]
+  },
+  { week: 6, phase: 'Aerobic Strength', mileage: '~16', summary: 'Halfway checkpoint: 1-mile time trial.',
+    days: [
+      { d: 'Mon', t: 'easy', name: '2.5 mi easy', detail: 'Strides.' },
+      { d: 'Tue', t: 'rest', name: 'Rest' },
+      { d: 'Wed', t: 'timetrial', name: '⚡ 1-MILE TIME TRIAL', detail: '1 mi warm-up • 1 mi all-out on the track (4 laps) • 1 mi cool-down. THIS IS THE CHECKPOINT. A 6:15-6:20 mile predicts sub-13 in the 2-mile. A 6:30-6:35 predicts 13:15-13:30.' },
+      { d: 'Thu', t: 'easy', name: '3 mi easy', detail: 'Recovery from the time trial. Take it really easy.' },
+      { d: 'Fri', t: 'rest', name: 'Rest' },
+      { d: 'Sat', t: 'long', name: '4 mi steady' },
+      { d: 'Sun', t: 'easy', name: '2.5 mi easy', detail: 'Strides.' },
+    ]
+  },
+  { week: 7, phase: 'Race-Specific Sharpening', mileage: '~14', summary: 'Goal-pace work begins. Your body learns sub-13.',
+    days: [
+      { d: 'Mon', t: 'easy', name: '2.5 mi easy', detail: 'Strides.' },
+      { d: 'Tue', t: 'rest', name: 'Rest' },
+      { d: 'Wed', t: 'workout', name: '4 × 400m at goal pace', detail: '1 mi warm-up • 4×400m at goal 2-mile pace (target 1:37 — sub-13 pace) with 2 min recovery • 1 mi cool-down.' },
+      { d: 'Thu', t: 'easy', name: '3 mi easy' },
+      { d: 'Fri', t: 'rest', name: 'Rest' },
+      { d: 'Sat', t: 'long', name: '3 mi steady', detail: 'Get used to running uncomfortable.' },
+      { d: 'Sun', t: 'easy', name: '2 mi easy', detail: 'Strides.' },
+    ]
+  },
+  { week: 8, phase: 'Race-Specific Sharpening', mileage: '~15', summary: 'More reps at goal pace. Confidence builds.',
+    days: [
+      { d: 'Mon', t: 'easy', name: '2.5 mi easy', detail: 'Strides.' },
+      { d: 'Tue', t: 'rest', name: 'Rest' },
+      { d: 'Wed', t: 'workout', name: '6 × 400m at goal pace', detail: '1 mi warm-up • 6×400m at goal 2-mile pace (target 1:37) with 2 min recovery • 1 mi cool-down. Your hardest workout so far.' },
+      { d: 'Thu', t: 'easy', name: '3 mi easy' },
+      { d: 'Fri', t: 'rest', name: 'Rest' },
+      { d: 'Sat', t: 'long', name: '3 mi steady' },
+      { d: 'Sun', t: 'easy', name: '2 mi easy', detail: 'Strides.' },
+    ]
+  },
+  { week: 9, phase: 'Race-Specific Sharpening', mileage: '~15', summary: 'Longer reps at race pace. Final sharpening.',
+    days: [
+      { d: 'Mon', t: 'easy', name: '2.5 mi easy', detail: 'Strides.' },
+      { d: 'Tue', t: 'rest', name: 'Rest' },
+      { d: 'Wed', t: 'workout', name: '4 × 600m at goal pace', detail: '1 mi warm-up • 4×600m at goal pace (target 2:25 per rep, 1.5 laps each) with 3 min recovery • 1 mi cool-down.' },
+      { d: 'Thu', t: 'easy', name: '3 mi easy' },
+      { d: 'Fri', t: 'rest', name: 'Rest' },
+      { d: 'Sat', t: 'long', name: '2.5 mi steady', detail: 'Lighter than usual — you\'re recovering for next week.' },
+      { d: 'Sun', t: 'easy', name: '2 mi easy', detail: 'Strides.' },
+    ]
+  },
+  { week: 10, phase: 'Taper + Race', mileage: '~10', summary: 'Race week. Sharpen, rest, deliver.',
+    days: [
+      { d: 'Mon', t: 'easy', name: '2 mi easy', detail: 'Strides. Stay loose.' },
+      { d: 'Tue', t: 'rest', name: 'Rest' },
+      { d: 'Wed', t: 'workout', name: '3 × 400m at goal pace', detail: '1 mi warm-up • 3×400m at goal pace (1:37) with 2 min recovery • 1 mi cool-down. Sharp and short.' },
+      { d: 'Thu', t: 'easy', name: '1.5 mi easy', detail: 'Very short. Save your legs.' },
+      { d: 'Fri', t: 'rest', name: 'Rest' },
+      { d: 'Sat', t: 'timetrial', name: '🏁 2-MILE TIME TRIAL', detail: 'The day. 1 mi warm-up • 2 mi all-out (8 laps on the track) • 1 mi cool-down. Run negative splits if you can — second mile equal or faster than the first. Trust the training.' },
+      { d: 'Sun', t: 'easy', name: '1 mi easy walk/jog', detail: 'Celebrate. You did it.' },
+    ]
+  },
+];
+
+const PR_EVENTS = [
+  { key: '400m', label: '400m', initial: '1:07' },
+  { key: '800m', label: '800m', initial: '2:37' },
+  { key: 'mile', label: '1 Mile', initial: '—' },
+  { key: 'two_mile', label: '2 Mile', initial: '14:01' },
+  { key: '5k', label: '5 Kilometer', initial: '21:53' },
+];
+
+// ============== STATE ==============
+const STORAGE_KEY = 'sub13-training-log';
+let state = {
+  workouts: {}, // key: "w{n}d{i}" => { completed, distance, time, feeling, notes, date }
+  prs: {},
+  currentEditKey: null,
+  currentEditDay: null,
+  currentPrKey: null,
+};
+
+const QUOTES = [
+  { text: "The miracle isn't that I finished. The miracle is that I had the courage to start.", author: "John Bingham" },
+  { text: "Somewhere in the world someone is training when you are not. When you race, that person will win.", author: "Tom Fleming" },
+  { text: "Don't dream of winning. Train for it.", author: "Mo Farah" },
+  { text: "Run when you can, walk if you have to, crawl if you must — just never give up.", author: "Dean Karnazes" },
+  { text: "Pain is inevitable. Suffering is optional.", author: "Haruki Murakami" },
+  { text: "It's the ability to take more out of yourself than you've got.", author: "Roger Bannister" },
+  { text: "I always loved running. It was something you could do by yourself, under your own power.", author: "Jesse Owens" },
+  { text: "The will to win means nothing without the will to prepare.", author: "Juma Ikangaa" },
+  { text: "I ran and ran every day, and I acquired a sense of determination, a sense of spirit that I would never give up.", author: "Wilma Rudolph" },
+  { text: "Never underestimate the power of dreams and the influence of the human spirit.", author: "Wilma Rudolph" },
+  { text: "To give anything less than your best is to sacrifice the gift.", author: "Steve Prefontaine" },
+  { text: "Champions keep playing until they get it right.", author: "Billie Jean King" },
+  { text: "Hard work beats talent when talent doesn't work hard.", author: "Tim Notke" },
+  { text: "It always seems impossible until it's done.", author: "Nelson Mandela" },
+  { text: "Excellence is not an act, but a habit.", author: "Will Durant" },
+  { text: "Discipline is the bridge between goals and accomplishment.", author: "Jim Rohn" },
+  { text: "Don't watch the clock. Do what it does. Keep going.", author: "Sam Levenson" },
+  { text: "Running is the greatest metaphor for life — you get out of it what you put into it.", author: "Oprah Winfrey" },
+  { text: "There is no failure in running, or in life, as long as you keep moving.", author: "Amby Burfoot" },
+  { text: "If you can't fly, run. If you can't run, walk. But whatever you do, keep moving forward.", author: "Martin Luther King Jr." },
+  { text: "It's not whether you get knocked down. It's whether you get up.", author: "Vince Lombardi" },
+  { text: "Strength does not come from physical capacity. It comes from an indomitable will.", author: "Mahatma Gandhi" },
+  { text: "Don't count the days. Make the days count.", author: "Muhammad Ali" },
+  { text: "Run hard, be strong, think big.", author: "Percy Cerutty" },
+  { text: "Ask yourself: 'Can I give more?' The answer is usually yes.", author: "Paul Tergat" },
+  { text: "Run the mile you're in.", author: "Ryan Hall" },
+  { text: "The competition is against the little voice inside you that wants you to quit.", author: "George Sheehan" },
+  { text: "I'm going to work so that it's a pure guts race at the end. If it is, I'm the only one who can win it.", author: "Steve Prefontaine" },
+  { text: "A runner runs against herself — not against a stopwatch.", author: "Bill Persichetty" },
+  { text: "Workouts are like brushing my teeth. I don't think about them, I just do them.", author: "Patti Sue Plumer" },
+  { text: "The greater the obstacle, the more glory in overcoming it.", author: "Molière" },
+  { text: "Mental will is a muscle that needs exercise, just like the muscles of the body.", author: "Lynn Jennings" },
+  { text: "Inspiration exists, but it has to find you working.", author: "Pablo Picasso" },
+  { text: "Believe you can, and you're halfway there.", author: "Theodore Roosevelt" },
+  { text: "When you feel like quitting, think about why you started.", author: "Anonymous" },
+  { text: "The good Lord gave you a body that can stand most anything. It's your mind you have to convince.", author: "Vince Lombardi" },
+  { text: "Today I will do what others won't, so tomorrow I can accomplish what others can't.", author: "Jerry Rice" },
+  { text: "The harder I work, the luckier I get.", author: "Samuel Goldwyn" },
+  { text: "Tough times never last, but tough people do.", author: "Robert Schuller" },
+  { text: "If you're losing faith in human nature, go out and watch a marathon.", author: "Kathrine Switzer" },
+  { text: "Divide the race into thirds. Run the first with your head, the middle with your personality, the last with your heart.", author: "Mike Fanelli" },
+  { text: "Most runs are not measured in miles, but in laughs and lessons.", author: "Anonymous" },
+  { text: "Show up. Run easy. Sleep well. Repeat.", author: "Anonymous" },
+  { text: "You are the engine. The road is just the road.", author: "Anonymous" },
+  { text: "Once you're beat mentally, you might as well not even go to the starting line.", author: "Todd Williams" },
+  { text: "There are clubs you can't belong to and schools you can't get into. But the roads are always open.", author: "Joan Benoit Samuelson" },
+  { text: "The first virtue is endurance. Courage is only the second.", author: "Napoleon" },
+  { text: "If you want to run, run a mile. If you want to experience a different life, run a marathon.", author: "Emil Zatopek" },
+  { text: "What we do in practice is what we will do in the race.", author: "Bill Bowerman" },
+  { text: "Some people create with words, with music, with paint. I like to make something beautiful when I run.", author: "Steve Prefontaine" },
+  { text: "You don't have to be fast. But you'd better be fearless.", author: "Anonymous" },
+  { text: "The body achieves what the mind believes.", author: "Anonymous" },
+  { text: "Easy days are easy. Hard days are hard. That's the whole secret.", author: "Anonymous" },
+  { text: "The pain you feel today will be the strength you feel tomorrow.", author: "Anonymous" },
+  { text: "Champions are not made in the gyms. Champions are made from something they have deep inside them — a desire, a dream, a vision.", author: "Muhammad Ali" },
+  { text: "Sweat plus sacrifice equals success.", author: "Charles Finley" },
+  { text: "I want to play with passion every day.", author: "Florence Griffith Joyner" },
+  { text: "Practice doesn't make perfect. Perfect practice makes perfect.", author: "Vince Lombardi" },
+  { text: "The five S's of training: stamina, speed, strength, skill, and spirit. But the greatest is spirit.", author: "Ken Doherty" },
+  { text: "What seems hard today will one day be your warm-up.", author: "Anonymous" },
+];
+
+function getTodaysQuote() {
+  const now = new Date();
+  const start = new Date(now.getFullYear(), 0, 0);
+  const dayOfYear = Math.floor((now - start) / 86400000);
+  return QUOTES[dayOfYear % QUOTES.length];
+}
+
+function renderDailyQuote() {
+  const q = getTodaysQuote();
+  const textEl = document.getElementById('quoteText');
+  const authorEl = document.getElementById('quoteAuthor');
+  if (textEl) textEl.textContent = `"${q.text}"`;
+  if (authorEl) authorEl.textContent = `— ${q.author}`;
+}
+
+function loadState() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      state.workouts = parsed.workouts || {};
+      state.prs = parsed.prs || {};
+    }
+  } catch (e) {
+    // No existing data; that's fine on first visit
+  }
+  // Seed PR initial values if not set
+  PR_EVENTS.forEach(p => {
+    if (!state.prs[p.key]) state.prs[p.key] = p.initial;
+  });
+  render();
+  renderDailyQuote();
+}
+
+function saveState() {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({
+      workouts: state.workouts,
+      prs: state.prs,
+    }));
+  } catch (e) {
+    console.error('Save failed:', e);
+  }
+}
+
+// ============== RENDER ==============
+function render() {
+  renderWeeks();
+  renderStats();
+  renderPrs();
+}
+
+function renderWeeks() {
+  const container = document.getElementById('weeksContainer');
+  container.innerHTML = PLAN.map(w => {
+    const completedCount = w.days.filter((d, i) => {
+      const key = `w${w.week}d${i}`;
+      return state.workouts[key]?.completed;
+    }).length;
+    const totalDays = w.days.length;
+    const pct = Math.round((completedCount / totalDays) * 100);
+    const circ = 2 * Math.PI * 20;
+    const dashoff = circ * (1 - completedCount / totalDays);
+
+    return `
+      <div class="week ${completedCount > 0 ? 'started' : ''}" data-week="${w.week}">
+        <div class="week-header" onclick="toggleWeek(${w.week})">
+          <div class="week-num"><span>Week</span>${String(w.week).padStart(2, '0')}</div>
+          <div class="week-info">
+            <h3>${w.phase}</h3>
+            <p>${w.summary}</p>
+          </div>
+          <div class="week-mileage">
+            <span>Total</span>${w.mileage} mi
+          </div>
+          <div class="week-progress">
+            <svg viewBox="0 0 48 48">
+              <circle class="week-progress-track" cx="24" cy="24" r="20"></circle>
+              <circle class="week-progress-fill" cx="24" cy="24" r="20"
+                stroke-dasharray="${circ}" stroke-dashoffset="${dashoff}"></circle>
+            </svg>
+            <div class="week-progress-text">${completedCount}/${totalDays}</div>
+          </div>
+        </div>
+        <div class="week-days">
+          ${w.days.map((day, i) => {
+            const key = `w${w.week}d${i}`;
+            const log = state.workouts[key];
+            const isDone = log?.completed;
+            const isRest = day.t === 'rest';
+            return `
+              <div class="day ${isDone ? 'completed' : ''}">
+                <div class="day-name">
+                  <span class="day-num">${i + 1}</span>${day.d}
+                </div>
+                <div class="day-workout ${day.t}">
+                  <strong>${day.name}</strong>
+                  ${day.detail ? `<p>${day.detail}</p>` : ''}
+                  ${log?.notes ? `<p style="margin-top:6px; font-style:italic; color:var(--ink-soft);">"${escapeHtml(log.notes)}"</p>` : ''}
+                </div>
+                <div class="day-action">
+                  ${isRest ? `
+                    <button class="log-btn ${isDone ? 'done' : ''}" onclick="toggleRest('${key}')">${isDone ? '✓ Rested' : 'Mark rested'}</button>
+                  ` : `
+                    <button class="log-btn ${isDone ? 'done' : ''}" onclick="openModal(${w.week}, ${i})">${isDone ? '✓ Logged' : 'Log it'}</button>
+                  `}
+                  ${log?.time ? `<div class="day-meta">${log.time}${log.feeling ? ' · ' + feelingEmoji(log.feeling) : ''}</div>` : ''}
+                </div>
+              </div>
+            `;
+          }).join('')}
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function renderStats() {
+  let done = 0, miles = 0;
+  PLAN.forEach((w, wi) => {
+    w.days.forEach((d, di) => {
+      const key = `w${w.week}d${di}`;
+      const log = state.workouts[key];
+      if (log?.completed) {
+        done++;
+        const dist = parseFloat(log.distance);
+        if (!isNaN(dist)) miles += dist;
+      }
+    });
+  });
+
+  // Find "current week" = first week not 100% complete
+  let currentWeek = PLAN.length;
+  for (const w of PLAN) {
+    const wDone = w.days.filter((d, i) => state.workouts[`w${w.week}d${i}`]?.completed).length;
+    if (wDone < w.days.length) { currentWeek = w.week; break; }
+  }
+
+  // Streak: consecutive completed (non-rest) days from most recent backward
+  const streak = calcStreak();
+
+  document.getElementById('statWeek').textContent = currentWeek > PLAN.length ? '✓' : currentWeek;
+  document.getElementById('statDone').textContent = done;
+  document.getElementById('statStreak').textContent = streak;
+  document.getElementById('statMiles').textContent = miles.toFixed(1);
+}
+
+function calcStreak() {
+  // Build flat ordered list of completed entries by date
+  const completions = [];
+  for (const [key, log] of Object.entries(state.workouts)) {
+    if (log.completed && log.date) {
+      completions.push({ key, date: log.date });
+    }
+  }
+  if (completions.length === 0) return 0;
+  completions.sort((a, b) => b.date.localeCompare(a.date));
+
+  let streak = 1;
+  for (let i = 1; i < completions.length; i++) {
+    const d1 = new Date(completions[i - 1].date);
+    const d2 = new Date(completions[i].date);
+    const diff = Math.round((d1 - d2) / 86400000);
+    if (diff === 1) streak++;
+    else if (diff === 0) continue; // same day, ignore
+    else break;
+  }
+  return streak;
+}
+
+function renderPrs() {
+  const c = document.getElementById('prsContainer');
+  c.innerHTML = PR_EVENTS.map(p => `
+    <div class="pr-card" onclick="openPrModal('${p.key}', '${p.label}')">
+      <div class="pr-event">${p.label}</div>
+      <div class="pr-time">${state.prs[p.key] || '—'}</div>
+      <div class="pr-edit">Tap to update →</div>
+    </div>
+  `).join('');
+}
+
+// ============== INTERACTION ==============
+function toggleWeek(weekNum) {
+  document.querySelectorAll('.week').forEach(el => {
+    if (parseInt(el.dataset.week) === weekNum) el.classList.toggle('open');
+    else el.classList.remove('open');
+  });
+}
+
+function toggleRest(key) {
+  if (state.workouts[key]?.completed) {
+    delete state.workouts[key];
+  } else {
+    state.workouts[key] = {
+      completed: true,
+      date: new Date().toISOString().slice(0, 10),
+      isRest: true,
+    };
+  }
+  saveState();
+  render();
+}
+
+function openModal(weekNum, dayIdx) {
+  const week = PLAN.find(w => w.week === weekNum);
+  const day = week.days[dayIdx];
+  const key = `w${weekNum}d${dayIdx}`;
+  const existing = state.workouts[key];
+
+  state.currentEditKey = key;
+  state.currentEditDay = day;
+
+  document.getElementById('modalEyebrow').textContent = `Week ${weekNum} • ${day.d}`;
+  document.getElementById('modalTitle').textContent = day.name;
+  document.getElementById('modalWorkout').textContent = day.detail || '';
+
+  document.getElementById('logDate').value = existing?.date || new Date().toISOString().slice(0, 10);
+  document.getElementById('logDistance').value = existing?.distance || '';
+  document.getElementById('logTime').value = existing?.time || '';
+  document.getElementById('logNotes').value = existing?.notes || '';
+
+  document.querySelectorAll('.feeling-btn').forEach(b => {
+    b.classList.toggle('selected', parseInt(b.dataset.feeling) === existing?.feeling);
+  });
+
+  document.getElementById('clearBtn').style.display = existing ? 'block' : 'none';
+  document.getElementById('modalBg').classList.add('show');
+}
+
+function closeModal() {
+  document.getElementById('modalBg').classList.remove('show');
+  state.currentEditKey = null;
+}
+
+function saveWorkout() {
+  const key = state.currentEditKey;
+  if (!key) return;
+
+  const feelingBtn = document.querySelector('.feeling-btn.selected');
+  const feeling = feelingBtn ? parseInt(feelingBtn.dataset.feeling) : null;
+
+  state.workouts[key] = {
+    completed: true,
+    date: document.getElementById('logDate').value,
+    distance: document.getElementById('logDistance').value,
+    time: document.getElementById('logTime').value,
+    feeling: feeling,
+    notes: document.getElementById('logNotes').value,
+  };
+
+  // Check if this is a time trial — auto-update PR
+  const day = state.currentEditDay;
+  if (day && day.t === 'timetrial' && state.workouts[key].time) {
+    const t = state.workouts[key].time.trim();
+    if (day.name.toLowerCase().includes('1-mile')) {
+      if (isFasterTime(t, state.prs.mile)) state.prs.mile = t;
+    } else if (day.name.toLowerCase().includes('2-mile')) {
+      if (isFasterTime(t, state.prs.two_mile)) state.prs.two_mile = t;
+    }
+  }
+
+  saveState();
+  closeModal();
+  render();
+}
+
+function clearWorkout() {
+  if (!confirm('Remove this workout entry?')) return;
+  delete state.workouts[state.currentEditKey];
+  saveState();
+  closeModal();
+  render();
+}
+
+function openPrModal(key, label) {
+  state.currentPrKey = key;
+  document.getElementById('prModalTitle').textContent = `${label} — new best`;
+  document.getElementById('prTimeInput').value = state.prs[key] === '—' ? '' : (state.prs[key] || '');
+  document.getElementById('prModalBg').classList.add('show');
+}
+
+function closePrModal() {
+  document.getElementById('prModalBg').classList.remove('show');
+  state.currentPrKey = null;
+}
+
+function savePr() {
+  const v = document.getElementById('prTimeInput').value.trim();
+  if (v) state.prs[state.currentPrKey] = v;
+  saveState();
+  closePrModal();
+  renderPrs();
+}
+
+function isFasterTime(a, b) {
+  if (!b || b === '—') return true;
+  return timeToSeconds(a) < timeToSeconds(b);
+}
+
+function timeToSeconds(t) {
+  if (!t) return Infinity;
+  const parts = t.split(':').map(parseFloat);
+  if (parts.length === 2) return parts[0] * 60 + parts[1];
+  if (parts.length === 3) return parts[0] * 3600 + parts[1] * 60 + parts[2];
+  return parseFloat(t) || Infinity;
+}
+
+function feelingEmoji(f) {
+  return ['', '😩', '😕', '😐', '🙂', '🔥'][f] || '';
+}
+
+function escapeHtml(s) {
+  return s.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+// Tabs
+document.querySelectorAll('.tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    tab.classList.add('active');
+    document.getElementById('panel-' + tab.dataset.tab).classList.add('active');
+  });
+});
+
+// Feeling buttons
+document.querySelectorAll('.feeling-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const wasSelected = btn.classList.contains('selected');
+    document.querySelectorAll('.feeling-btn').forEach(b => b.classList.remove('selected'));
+    if (!wasSelected) btn.classList.add('selected');
+  });
+});
+
+// Modal background clicks
+document.getElementById('modalBg').addEventListener('click', (e) => {
+  if (e.target.id === 'modalBg') closeModal();
+});
+document.getElementById('prModalBg').addEventListener('click', (e) => {
+  if (e.target.id === 'prModalBg') closePrModal();
+});
+
+// Init
+loadState();
+
+// Open week 1 by default
+setTimeout(() => {
+  const w1 = document.querySelector('.week[data-week="1"]');
+  if (w1) w1.classList.add('open');
+}, 100);
+
+</script>
+</body>
+</html>
